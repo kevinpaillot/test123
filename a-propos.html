@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>À propos — Carnets de route</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f4efe6">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="nav-row">
+    <a href="index.html" class="brand"><span class="mark"></span> Carnets de route</a>
+    <nav class="links">
+      <a href="index.html">Accueil</a>
+      <a href="recits.html">Récits</a>
+      <a href="a-propos.html">À propos</a>
+    </nav>
+    <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="article-header" style="padding-top: 70px;">
+  <div class="meta">À propos</div>
+  <h1>Un carnet, pas un guide</h1>
+</div>
+
+<div class="about-body">
+  <p>Ce site est une démonstration technique : une page d'accueil, une liste d'articles, et des pages de détail combinant texte et images statiques — le tout en HTML/CSS/JS pur, sans framework ni base de données.</p>
+  <p>La structure est volontairement simple à dupliquer : chaque récit est un fichier <code>.html</code> indépendant, ce qui la rend facile à étendre à mesure que de nouveaux contenus s'ajoutent.</p>
+  <p>Le site est déployé automatiquement à chaque envoi de code, et fonctionne aussi hors-ligne une fois visité, grâce à un service worker.</p>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2026 Carnets de route</span>
+    <span>Site de démonstration</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

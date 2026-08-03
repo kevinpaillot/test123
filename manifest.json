@@ -1,13 +1,13 @@
 {
-  "name": "Chronomètre",
-  "short_name": "Chrono",
-  "description": "Un chronomètre simple avec tours et réinitialisation",
+  "name": "Carnets de route",
+  "short_name": "Carnets",
+  "description": "Un carnet de récits de voyage, en texte et en images",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#16181d",
-  "theme_color": "#16181d",
+  "background_color": "#f4efe6",
+  "theme_color": "#f4efe6",
   "icons": [
     {
       "src": "icon-192.png",
