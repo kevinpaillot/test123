@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Chronomètre</title>
+<meta charset="UTF-8"><!-- Encodage UTF-8 pour les caractères accentués -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><!-- Réglages pour mobile / responsive, empêche le zoom (user-scalable=no) -->
+<title>Chronomètre</title><!-- Titre de l'onglet -->
 
 <!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#16181d">
-<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json"><!-- Fichier manifest pour PWA -->
+<meta name="theme-color" content="#16181d"><!-- Couleur du thème pour navigateurs / barre d'adresse -->
+<link rel="icon" href="icon-192.png"><!-- Icône du site -->
 
 <!-- iOS -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Chrono">
-<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><!-- Permet l'ajout en plein écran sur iOS -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><!-- Style de la barre de statut iOS -->
+<meta name="apple-mobile-web-app-title" content="Chrono"><!-- Nom affiché sur l'écran d'accueil iOS -->
+<link rel="apple-touch-icon" href="icon-192.png"><!-- Icône iOS -->
 
 <style>
+  /* Variables de thème réutilisables */
   :root {
     --bg: #16181d;
     --panel: #1f232b;
@@ -29,28 +30,29 @@
     --text-dim: #6b7280;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; } /* Box sizing global */
 
   html, body {
     height: 100%;
-    overscroll-behavior: none;
+    overscroll-behavior: none; /* Prévenir rebonds de scroll sur mobile */
   }
 
   body {
     margin: 0;
     min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100dvh; /* Support des unités dynamiques sur mobile */
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: var(--text);
-    padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); /* Respect des safe areas (notch) */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
 
+  /* Conteneur principal représentant l'appareil / panneau */
   .device {
     background: var(--panel);
     border-radius: 20px;
@@ -70,6 +72,7 @@
     margin-bottom: 18px;
   }
 
+  /* Affichage du chronomètre (heures:minutes) - police monospace pour alignement */
   .display {
     text-align: center;
     font-family: "Courier New", monospace;
@@ -80,17 +83,17 @@
     text-shadow: none;
     transition: color 0.15s, text-shadow 0.15s;
     margin-bottom: 8px;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: tabular-nums; /* chiffres à largeur fixe */
   }
 
   .display.running {
-    color: var(--digit);
+    color: var(--digit); /* Couleur et halo quand en cours */
     text-shadow: 0 0 18px rgba(255, 159, 28, 0.55);
   }
 
   .ms {
     font-size: 24px;
-    opacity: 0.7;
+    opacity: 0.7; /* Millisecondes légèrement atténuées */
   }
 
   .status {
@@ -98,10 +101,10 @@
     font-size: 12px;
     color: var(--text-dim);
     margin-bottom: 28px;
-    height: 16px;
+    height: 16px; /* Réserve d'espace pour le statut (En cours / En pause) */
   }
 
-  .status.live { color: var(--start); }
+  .status.live { color: var(--start); } /* Couleur quand actif */
 
   .controls {
     display: grid;
@@ -110,6 +113,7 @@
     margin-bottom: 20px;
   }
 
+  /* Styles généraux des boutons */
   button {
     border: none;
     border-radius: 12px;
@@ -128,11 +132,13 @@
   button:disabled { opacity: 0.35; cursor: not-allowed; }
   button:not(:disabled):hover { filter: brightness(1.1); }
 
+  /* Boutons spécifiques */
   #startBtn { background: var(--start); }
   #stopBtn { background: var(--stop); }
   #lapBtn { background: var(--neutral); grid-column: span 1; }
   #resetBtn { background: var(--neutral); grid-column: span 1; }
 
+  /* Liste des tours */
   .laps {
     max-height: 160px;
     overflow-y: auto;
@@ -140,7 +146,7 @@
     padding-top: 12px;
   }
 
-  .laps:empty { display: none; }
+  .laps:empty { display: none; } /* Masquer si vide */
 
   .lap-row {
     display: flex;
@@ -152,7 +158,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
 
-  .lap-row span:first-child { color: var(--text); }
+  .lap-row span:first-child { color: var(--text); } /* Le label (Tour n) plus visible */
 
   .laps::-webkit-scrollbar { width: 6px; }
   .laps::-webkit-scrollbar-thumb { background: var(--neutral); border-radius: 3px; }
@@ -167,21 +173,29 @@
 <body>
 
 <div class="device">
+  <!-- Titre / label de l'app -->
   <div class="label">Chronomètre</div>
+
+  <!-- Affichage principal du temps; l'ID est utilisé par le script pour mettre à jour -->
   <div class="display" id="display">00:00<span class="ms">.00</span></div>
+
+  <!-- Zone de statut: vide par défaut, mise à jour par le script -->
   <div class="status" id="status"></div>
 
+  <!-- Contrôles (Démarrer / Arrêter / Tour / Réinitialiser) -->
   <div class="controls">
-    <button id="startBtn">Démarrer</button>
-    <button id="stopBtn" disabled>Arrêter</button>
-    <button id="lapBtn" disabled>Tour</button>
-    <button id="resetBtn" disabled>Réinitialiser</button>
+    <button id="startBtn">Démarrer</button><!-- Démarre ou reprend le chronomètre -->
+    <button id="stopBtn" disabled>Arrêter</button><!-- Arrête / met en pause -->
+    <button id="lapBtn" disabled>Tour</button><!-- Enregistre un tour (lap) -->
+    <button id="resetBtn" disabled>Réinitialiser</button><!-- Remet à zéro -->
   </div>
 
+  <!-- Conteneur des tours enregistrés; rempli dynamiquement -->
   <div class="laps" id="laps"></div>
 </div>
 
 <script>
+  // Récupération des éléments du DOM
   const display = document.getElementById('display');
   const status = document.getElementById('status');
   const startBtn = document.getElementById('startBtn');
@@ -190,13 +204,16 @@
   const resetBtn = document.getElementById('resetBtn');
   const lapsEl = document.getElementById('laps');
 
-  let startTime = 0;
-  let elapsed = 0;
-  let timerId = null;
-  let lapCount = 0;
+  // Variables de l'état du chronomètre
+  let startTime = 0;   // timestamp quand le chrono a été (re)démarré (performance.now)
+  let elapsed = 0;     // temps accumulé en ms lors des pauses
+  let timerId = null;  // identifiant du requestAnimationFrame quand en cours
+  let lapCount = 0;    // compteur de tours
 
+  // Formatteur: convertit des millisecondes en { main: "MM:SS", ms: "CS" }
+  // Note: la précision affichée est en centièmes (cs = centièmes de seconde)
   function format(ms) {
-    const totalCs = Math.floor(ms / 10);
+    const totalCs = Math.floor(ms / 10); // centièmes de seconde
     const cs = totalCs % 100;
     const totalSec = Math.floor(totalCs / 100);
     const sec = totalSec % 60;
@@ -205,69 +222,77 @@
     return { main: `${pad(min)}:${pad(sec)}`, ms: pad(cs) };
   }
 
+  // Met à jour l'affichage en lisant le temps courant
   function render() {
+    // Si timerId est actif, on calcule le temps courant (elapsed + delta depuis startTime)
     const now = elapsed + (timerId ? performance.now() - startTime : 0);
     const { main, ms } = format(now);
-    display.innerHTML = `${main}<span class="ms">.${ms}</span>`;
+    display.innerHTML = `${main}<span class="ms">.${ms}</span>`; // mise à jour HTML
   }
 
+  // Boucle d'animation / mise à jour continue via requestAnimationFrame
   function tick() {
     render();
     timerId = requestAnimationFrame(tick);
   }
 
+  // Événement: clic sur "Démarrer" / "Reprendre"
   startBtn.addEventListener('click', () => {
-    startTime = performance.now();
-    timerId = requestAnimationFrame(tick);
-    display.classList.add('running');
+    startTime = performance.now(); // point de départ pour ce segment
+    timerId = requestAnimationFrame(tick); // lance la boucle
+    display.classList.add('running'); // style visuel "en cours"
     status.textContent = 'En cours';
     status.classList.add('live');
     startBtn.disabled = true;
     stopBtn.disabled = false;
     lapBtn.disabled = false;
-    resetBtn.disabled = true;
+    resetBtn.disabled = true; // reset non disponible pendant la course
   });
 
+  // Événement: clic sur "Arrêter" (met en pause)
   stopBtn.addEventListener('click', () => {
-    cancelAnimationFrame(timerId);
-    elapsed += performance.now() - startTime;
+    cancelAnimationFrame(timerId); // stop boucle
+    elapsed += performance.now() - startTime; // accumule la durée du segment en cours
     timerId = null;
     display.classList.remove('running');
     status.textContent = 'En pause';
     status.classList.remove('live');
     startBtn.disabled = false;
-    startBtn.textContent = 'Reprendre';
+    startBtn.textContent = 'Reprendre'; // changer le libellé pour reprendre
     stopBtn.disabled = true;
     lapBtn.disabled = true;
-    resetBtn.disabled = false;
+    resetBtn.disabled = false; // autoriser la réinitialisation quand en pause
   });
 
+  // Événement: clic sur "Tour" (enregistre un laps)
   lapBtn.addEventListener('click', () => {
     lapCount++;
-    const now = elapsed + (performance.now() - startTime);
+    const now = elapsed + (performance.now() - startTime); // temps courant total
     const { main, ms } = format(now);
     const row = document.createElement('div');
     row.className = 'lap-row';
-    row.innerHTML = `<span>Tour ${lapCount}</span><span>${main}.${ms}</span>`;
-    lapsEl.prepend(row);
+    row.innerHTML = `<span>Tour ${lapCount}</span><span>${main}.${ms}</span>`; // format "Tour N  MM:SS.CS"
+    lapsEl.prepend(row); // ajoute en haut de la liste
   });
 
+  // Événement: clic sur "Réinitialiser" (remet tout à zéro)
   resetBtn.addEventListener('click', () => {
     elapsed = 0;
     lapCount = 0;
-    lapsEl.innerHTML = '';
-    display.innerHTML = '00:00<span class="ms">.00</span>';
+    lapsEl.innerHTML = ''; // vide la liste des tours
+    display.innerHTML = '00:00<span class="ms">.00</span>'; // affichage par défaut
     status.textContent = '';
-    startBtn.textContent = 'Démarrer';
+    startBtn.textContent = 'Démarrer'; // remettre le libellé initial
     startBtn.disabled = false;
     stopBtn.disabled = true;
     lapBtn.disabled = true;
     resetBtn.disabled = true;
   });
 
+  // Enregistrement du service worker si supporté (pour PWA / offline)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.register('sw.js').catch(() => {}); // erreur silencieuse si échec
     });
   }
 </script>
